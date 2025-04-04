@@ -2,10 +2,10 @@
   <v-app>
     <v-main>
       <div class="welcome-screen">
-        <v-container>
-          <v-row justify="center">
-            <v-col cols="12" md="6">
-              <v-card class="pa-4 text-center">
+        <v-container fluid class="fill-height">
+          <v-row justify="center" align="center" class="fill-height">
+            <v-col cols="12" sm="10" md="8" lg="6">
+              <v-card class="pa-4 text-center welcome-card">
                 <v-card-title class="text-h4 font-weight-bold">
                   Armored Tactics
                 </v-card-title>
@@ -21,7 +21,7 @@
                 
                 <v-card-actions class="justify-center">
                   <v-btn color="primary">
-                    Iniciar
+                    INICIAR
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -42,6 +42,7 @@ html, body {
   margin: 0;
   padding: 0;
   height: 100%;
+  width: 100%;
   overflow: hidden;
 }
 
@@ -63,5 +64,10 @@ html, body {
 
 .v-application {
   background-color: #121212 !important;
+}
+
+.welcome-card {
+  width: 100%;
+  max-width: 100%;
 }
 </style>
