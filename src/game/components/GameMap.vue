@@ -107,7 +107,8 @@ export default {
       mapContainer: null,
       gameStore: null,
       currentCoords: { x: '--', y: '--' },
-      sidebarVisible: true
+      sidebarVisible: true,
+      screenWidth: window.innerWidth
     }
   },
   
@@ -163,6 +164,14 @@ export default {
     
     toggleSidebar() {
       this.sidebarVisible = !this.sidebarVisible;
+    },
+    
+    handleResize() {
+      this.screenWidth = window.innerWidth;
+      // Oculta o menu automaticamente em telas pequenas
+      if (this.screenWidth < 768) {
+        this.sidebarVisible = false;
+      }
     }
   },
   
@@ -171,6 +180,14 @@ export default {
     if (!this.gameStore.map) {
       this.gameStore.loadMap('americanKriegsspiel');
     }
+    
+    // Em telas pequenas, inicia com o menu oculto
+    if (window.innerWidth < 768) {
+      this.sidebarVisible = false;
+    }
+    
+    // Adiciona evento de redimensionamento
+    window.addEventListener('resize', this.handleResize);
   },
   
   mounted() {
@@ -187,6 +204,9 @@ export default {
     if (mapArea) {
       mapArea.removeEventListener('mousemove', this.updateCoordinateMarkers);
     }
+    
+    // Remove o listener de redimensionamento
+    window.removeEventListener('resize', this.handleResize);
   }
 }
 </script>
@@ -660,7 +680,74 @@ export default {
 /* Responsividade */
 @media (max-width: 768px) {
   .map-sidebar {
-    width: 240px;
+    width: 230px;
+  }
+  
+  .sidebar-toggle {
+    right: 230px;
+  }
+  
+  .dpi-indicator {
+    flex-wrap: wrap;
+  }
+  
+  .dpi-indicator span {
+    padding: 3px 6px;
+    font-size: 0.7rem;
+  }
+  
+  .map-title h2 {
+    font-size: 1.2rem;
+  }
+  
+  .notation-text {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .map-sidebar {
+    width: 180px;
+  }
+  
+  .sidebar-toggle {
+    right: 180px;
+  }
+  
+  .sidebar-header {
+    padding: 12px;
+  }
+  
+  .sidebar-section {
+    padding: 10px;
+  }
+  
+  .classification-stamp {
+    font-size: 0.5rem;
+    top: 5px;
+    right: 5px;
+  }
+  
+  .map-title h2 {
+    font-size: 1rem;
+  }
+  
+  .notation-symbol {
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+  }
+  
+  .dpi-indicator span {
+    margin-bottom: 5px;
+  }
+  
+  .military-button {
+    padding: 8px 12px;
+  }
+  
+  .button-label {
+    font-size: 0.7rem;
   }
 }
 </style> 
