@@ -1,5 +1,5 @@
 <template>
-  <div class="game-map-container">
+  <div class="game-map-container" :class="{ 'sidebar-hidden': !sidebarVisible }">
     <div class="map-area" ref="mapContainer">
       <div class="map-grid" :style="mapGridStyle">
         <div 
@@ -27,6 +27,11 @@
         <div class="coordinate-x">10</div>
         <div class="coordinate-y">A</div>
       </div>
+    </div>
+    
+    <!-- Botão para ocultar/mostrar menu lateral -->
+    <div class="sidebar-toggle" @click="toggleSidebar">
+      <span class="toggle-icon">{{ sidebarVisible ? '►' : '◄' }}</span>
     </div>
     
     <div class="map-sidebar">
@@ -101,7 +106,8 @@ export default {
       selectedDpi: 96,
       mapContainer: null,
       gameStore: null,
-      currentCoords: { x: '--', y: '--' }
+      currentCoords: { x: '--', y: '--' },
+      sidebarVisible: true
     }
   },
   
@@ -153,6 +159,10 @@ export default {
     updateCoordinateMarkers() {
       // Aqui poderíamos implementar lógica para atualizar os marcadores de coordenadas
       // à medida que o jogador move o mouse sobre o mapa
+    },
+    
+    toggleSidebar() {
+      this.sidebarVisible = !this.sidebarVisible;
     }
   },
   
@@ -203,6 +213,7 @@ export default {
   background-size: 24px 24px, 24px 24px, 100% 100%;
   background-position: -1px -1px;
   box-shadow: inset 0 0 40px rgba(30, 30, 30, 0.15);
+  transition: width 0.3s ease-in-out;
 }
 
 .coordinates-overlay {
@@ -232,6 +243,32 @@ export default {
   top: 50%;
 }
 
+/* Botão de toggle do menu lateral */
+.sidebar-toggle {
+  position: absolute;
+  top: 50%;
+  right: 280px;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 60px;
+  background-color: #1a2a30;
+  border: 2px solid #2c7;
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 11;
+  transition: right 0.3s ease-in-out;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.3);
+}
+
+.toggle-icon {
+  color: #2c7;
+  font-size: 14px;
+}
+
 .map-sidebar {
   width: 280px;
   height: 100%;
@@ -243,6 +280,16 @@ export default {
   flex-direction: column;
   box-shadow: -3px 0 15px rgba(0, 0, 0, 0.3);
   z-index: 10;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Estado do container quando o menu está oculto */
+.sidebar-hidden .map-sidebar {
+  transform: translateX(100%);
+}
+
+.sidebar-hidden .sidebar-toggle {
+  right: 0;
 }
 
 .sidebar-header {
