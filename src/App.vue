@@ -1,7 +1,8 @@
 <template>
   <v-app>
     <v-main>
-      <div class="main-menu-screen">
+      <!-- Menu Principal -->
+      <div v-if="currentScreen === 'mainMenu'" class="main-menu-screen">
         <div class="menu-background"></div>
         <div class="menu-container">
           <div class="game-title">
@@ -11,8 +12,11 @@
           
           <div class="menu-options">
             <div 
-              class="menu-option active" 
-              @click="alert('New Game selecionado')"
+              class="menu-option" 
+              @click="startNewGame"
+              :class="{ 'active': menuOption === 'newGame' }"
+              @mouseover="menuOption = 'newGame'"
+              @mouseleave="menuOption = ''"
             >
               <span class="option-marker">►</span>
               <span class="option-text">NEW GAME</span>
@@ -20,7 +24,10 @@
             
             <div 
               class="menu-option" 
-              @click="alert('Credits selecionado')"
+              @click="showCredits"
+              :class="{ 'active': menuOption === 'credits' }"
+              @mouseover="menuOption = 'credits'"
+              @mouseleave="menuOption = ''"
             >
               <span class="option-marker">►</span>
               <span class="option-text">CREDITS</span>
@@ -32,14 +39,68 @@
           </div>
         </div>
       </div>
+      
+      <!-- Tela do Jogo -->
+      <game-map v-if="currentScreen === 'game'" />
+      
+      <!-- Tela de Créditos -->
+      <div v-if="currentScreen === 'credits'" class="credits-screen">
+        <div class="menu-background"></div>
+        <div class="credits-container">
+          <h1>CRÉDITOS</h1>
+          <div class="credits-content">
+            <p>Desenvolvido como um exemplo de jogo RTS baseado em estilo topográfico antigo.</p>
+            <p>Inspirado no American Kriegsspiel, 1882.</p>
+          </div>
+          <v-btn @click="returnToMainMenu" color="primary" class="mt-4">
+            Voltar ao Menu
+          </v-btn>
+        </div>
+      </div>
     </v-main>
   </v-app>
 </template>
 
-<script setup lang="ts">
-// Usando JavaScript nativo
-function alert(message: string) {
-  console.log(message);
+<script>
+// Usando modo Options API para simplicidade
+import GameMap from './game/components/GameMap.vue';
+import { useGameStore } from './game/store/gameStore';
+
+export default {
+  components: {
+    GameMap
+  },
+  
+  data() {
+    return {
+      menuOption: '',
+      gameStore: null
+    }
+  },
+  
+  computed: {
+    currentScreen() {
+      return this.gameStore?.currentScreen || 'mainMenu';
+    }
+  },
+  
+  methods: {
+    startNewGame() {
+      this.gameStore.startNewGame();
+    },
+    
+    showCredits() {
+      this.gameStore.showCredits();
+    },
+    
+    returnToMainMenu() {
+      this.gameStore.returnToMainMenu();
+    }
+  },
+  
+  created() {
+    this.gameStore = useGameStore();
+  }
 }
 </script>
 
@@ -157,9 +218,36 @@ html, body {
   font-size: 0.9rem;
 }
 
+/* Tela de créditos */
+.credits-screen {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.credits-container {
+  position: relative;
+  z-index: 1;
+  width: 80%;
+  max-width: 600px;
+  background-color: rgba(30, 35, 40, 0.85);
+  border: 2px solid #2c7;
+  box-shadow: 0 0 20px rgba(44, 119, 112, 0.4);
+  padding: 40px;
+  text-align: center;
+}
+
+.credits-content {
+  margin: 30px 0;
+  line-height: 1.6;
+}
+
 /* Para versões mobile */
 @media (max-width: 600px) {
-  .menu-container {
+  .menu-container, .credits-container {
     width: 95%;
     padding: 20px;
   }
